@@ -1,0 +1,44 @@
+body, html{
+	height: 100%;
+	background-color: #f2e2cd;
+}
+
+
+#title{
+	margin-top: 10px;
+	margin-bottom: 10px;
+	height: 20%;
+	width: 100%;
+	background-image: url('title_vanGogh.jpg');
+	color: #c3fff4; 
+	text-align: center;
+	line-height: 100px;
+	font-size: 40px;
+	font-family: cursive;
+}
+
+.left {
+	position: relative;
+	float: left;
+	height: 80%;
+	width: 18%;
+	background-color: #eeba30;
+	border: 3px solid black;
+}
+
+.right {
+	position: relative;
+	float: right;
+	height: 80%;
+	width: 80%;
+	background-color: #d3ffce; 
+
+}
+
+.tag {
+	position: relative;
+	height: 50px;
+	width: 100px;
+	background-color: white;
+	font-size: 20px;
+}
