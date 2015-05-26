@@ -13,7 +13,7 @@ class tag(models.Model):
 
 class bookmark(models.Model):
     tag = models.ForeignKey(tag)
-    description = models.TextField(blank=True)
+    description = models.TextField()
     where = models.URLField()
 
     def __str__(self):
