@@ -24,10 +24,18 @@ jQuery(function($){
         type: 'GET',
         url: '/bookmarks/api/info/bookmark/?format=json',
         success: function(data) {
-            $.each(data["objects"], function(object){
-                $('.myBookmarks').append(object["where"])
-            })
+            for (var i=0; i<data["objects"].length; i++) {
+                var url=data["objects"][i]["where"];
+                var description = data["objects"][i]["description"];
+                // delete url trailing slash
+                var re = new RegExp('/$')
+                if (url.match(re)) {
+                    url = url.substring(0,url.length-1)
+                }
+                $('#myBookmarks').append("<a href="+url+">"+description+"</a></br>");
+            }
         },
+
         error: function(){alert("Error loading bookmarks!")},
     })
 
