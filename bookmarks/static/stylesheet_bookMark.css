@@ -35,10 +35,7 @@ body, html{
 
 }
 
-.tag {
-	position: relative;
-	height: 50px;
-	width: 100px;
-	background-color: white;
-	font-size: 20px;
+#bm_info {
+    visibility: hidden;
 }
+

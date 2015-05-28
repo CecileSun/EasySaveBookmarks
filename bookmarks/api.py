@@ -13,11 +13,12 @@ class tagResource(ModelResource):
         #fields=['tag_name']
 
 class bookmarkResource(ModelResource):
-    tag = fields.ForeignKey(tagResource, 'tag')
+    tag = fields.ForeignKey(tagResource, 'tag', full=True)
 
     class Meta:
         queryset = bookmark.objects.all()
         resource_name = 'bookmark'
         authorization = DjangoAuthorization()
+        allowed_methods = ['get', 'post']
 
-        #fields = ['description', 'where', 'tag__tag_name']
+        #fields = ['description','where', 'tag__tag_name']
