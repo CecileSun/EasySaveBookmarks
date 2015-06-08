@@ -1,49 +1,47 @@
 $(document).ready(function(){
+    //alert('document');
     var $myTags = $('#myTags');
     var tag_list=[];
-    $.ajax({
-        type: 'GET',
-        url: '/bookmarks/api/info/bookmark/?format=json',
-        success: function(data){
-            for (var i=0; i<data['objects'].length; i++){
-                var where = data['objects'][i]['where'];
-                //delete url trailing slash
-                    var re = new RegExp('/$');
-                    if (where.match(re)) {
-                        where = where.substring(0,where.length-1);
-                    };
-                var description = data['objects'][i]['description'];
-                var tag_name = data['objects'][i]['tag']['tag_name'];
-                if (tag_list.indexOf(tag_name)>-1){
-                    $('#'+tag_name).append('<li><a href='+where+'>'+description+'</a><button>delete</button></br></li>');
-                } else {
-                    tag_list.push(data['objects'][i]['tag']['tag_name']);
-                    $myTags.append("<ul class='tag' id="+tag_name+">"+tag_name+"</br></ul>");
-                    $('#'+tag_name).append('<li><a href='+where+'>'+description+'</a><button>delete</button></br></li>');
-                }
+    //Define global Api variable
+    window.Api = {
+        get_bookmarks: function(){ //will add user log_in later
+            var url = '/bookmarks/api/info/bookmark/?format=json';
+            return $.ajax(url, {type: 'GET'});
+        },
+        post_bookmark: function(data){
+            var url = '/bookmarks/api/info/bookmark/?format=json';
+            return $.ajax(url, {type: 'POST', data: data, dataType: 'json', processData: false, contentType: 'application/json'});
+        },
+        delete_bookmark: function(delete_id){
+            var url = '/bookmarks/api/info/bookmark/'+delete_id+'/?format=json';
+            return $.ajax(url, {type:'DELETE'});
+        }
+    };
+
+
+// GET existing bookmarks from the server
+    window.Api.get_bookmarks().success(function(data){
+        //console.table(bookmarks);
+        for (var i=0; i<data['objects'].length; i++){
+            var where = data['objects'][i]['where'];
+            //delete url trailing slash
+            var re = new RegExp('/$');
+            if (where.match(re)) {
+                where = where.substring(0,where.length-1);
+                };
+            var description = data['objects'][i]['description'];
+            var id = data['objects'][i]['id']
+            var tag_name = data['objects'][i]['tag']['tag_name'];
+            if (tag_list.indexOf(tag_name)>-1){
+                $('#'+tag_name).append("<li><a href="+where+">"+description+"</a><button class='delete' id='"+id+"'>delete</button></br></li>");
+            } else {
+                tag_list.push(data['objects'][i]['tag']['tag_name']);
+                $myTags.append("<ul class='tag' id="+tag_name+">"+tag_name+"</br></ul>");
+                $('#'+tag_name).append("<li><a href="+where+">"+description+"</a><button class='delete' id='"+id+"'>delete</button></br></li>");
             }
         }
-    });
 
-//--------------------------------------------DELETE bookmarks DOES NOT WORK----------------------------------------------
-    $('ul').on('click', 'button', function(ev){
-        ev.preventDefault();
-        $(this).parent().remove();
-        var id = $(this).parent().attr('id');
-        console.log(id);
-        $.ajax({
-            type: 'DELETE',
-            url: '/bookmarks/api/info/bookmark/'+id+'/?format=json',
-            success: function(){
-                console.log('deleted!');
-            },
-            error: function(jqXHR, textStatus, errorThrown){
-                console.log(jqXHR);
-            }
-        })
     });
-//--------------------------------------------DELETE bookmarks DOES NOT WORK----------------------------------------------
-
 
 
 //POST new bookmarks to the server
@@ -70,24 +68,23 @@ $(document).ready(function(){
             "where": where,
         });
         //console.log(inputData);
+        window.Api.post_bookmark(inputData).error(function(jqXHR, textStatus, errorThrown){
+            console.log(jqXHR);
+        });
 
-        $.ajax({
-            type: 'POST',
-            url: '/bookmarks/api/info/bookmark/?format=json',
-            data: inputData,//JSON.stringify({"description": "test", "tag": {"tag_name": "test"}, "where": "https://www.linux.com/"}),//JSON.stringify(values),
-            dataType: 'json',
-            processData: false,
-            contentType: 'application/json',
-            success: function(data) {
-//                console.log('post success');
-            },
-            error: function(jqXHR, textStatus, errorThrown){
-                console.log(jqXHR);
-            }
-        })
         $('#button_add').show();
 
     });
 
-});
+/////////////////////////////////////////////////delete bookmark work on console but not here/////////////////////////////////
+    $('.delete').on('click', function(ev){
+        $(this).parent().remove();
+        delete_id = $(this).attr('id');
+        alert(delete_id);
+        window.Api.delete_bookmark(delete_id).success(function(ev){
+            console.log('delete');
+        })
+    });
+})
+
 
