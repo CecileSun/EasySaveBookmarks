@@ -40,9 +40,21 @@ $(document).ready(function(){
                 $('#'+tag_name).append("<li><a href="+where+">"+description+"</a><button class='delete' id='"+id+"'>delete</button></br></li>");
             }
         }
+        $('.delete').on('click', function(ev){
+            $(this).parent().remove();
+            delete_id = $(this).attr('id');
+            //debugger
+            alert(delete_id);
+            window.Api.delete_bookmark(delete_id).success(function(ev){
+                console.log('delete');
+            });
+            window.Api.delete_bookmark(delete_id).error(function(jqXHR, textStatus, errorThrown){
+                console.log(jqXHR);
+            });
 
-    });
-
+        });
+    })
+    //debugger
 
 //POST new bookmarks to the server
     $('#button_add').on('click', function(){
@@ -74,16 +86,6 @@ $(document).ready(function(){
 
         $('#button_add').show();
 
-    });
-
-/////////////////////////////////////////////////delete bookmark work on console but not here/////////////////////////////////
-    $('.delete').on('click', function(ev){
-        $(this).parent().remove();
-        delete_id = $(this).attr('id');
-        alert(delete_id);
-        window.Api.delete_bookmark(delete_id).success(function(ev){
-            console.log('delete');
-        })
     });
 })
 
